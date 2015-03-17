@@ -8,5 +8,8 @@ Stable on Android and iOS.
 
 # Release Notes
 
+## 1.0.1 (Mar 17, 2015)
+* Remove android.support.v4 dependency from chrome.bluetooth
+
 ## 1.0.0 (Jan 27, 2015)
 * Initial release
