@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-registerManualTests('chrome.bluetoothLowEnergy', function(rootEl, addButton) {
+/* global logger */
+
+exports.defineManualTests = function(rootEl, addButton) {
 
   var devices = {}; /** key is deviceAddress, value is device object */
   var services = {}; /** key is serviceId, value is service object */
@@ -294,4 +296,4 @@ registerManualTests('chrome.bluetoothLowEnergy', function(rootEl, addButton) {
     }
   });
 
-});
+};
