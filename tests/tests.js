@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* global logger */
-
 exports.defineManualTests = function(rootEl, addButton) {
 
   var devices = {}; /** key is deviceAddress, value is device object */
@@ -26,89 +24,89 @@ exports.defineManualTests = function(rootEl, addButton) {
 
   addButton('Test getAdapter State', function() {
     chrome.bluetooth.getAdapterState(function(adapter) {
-      logger(JSON.stringify(adapter));
+      console.log(JSON.stringify(adapter));
     });
   });
 
   addButton('Add Events Listener', function() {
 
     chrome.bluetooth.onAdapterStateChanged.addListener(function(adapter) {
-      logger(JSON.stringify(adapter));
+      console.log(JSON.stringify(adapter));
     });
 
     chrome.bluetooth.onDeviceAdded.addListener(function(device) {
-      logger('Device added: ' + device.address);
+      console.log('Device added: ' + device.address);
       devices[device.address] = device;
     });
 
     chrome.bluetooth.onDeviceChanged.addListener(function(device) {
-      logger('Device changed: ' + device.address);
+      console.log('Device changed: ' + device.address);
       devices[device.address] = device;
     });
 
     chrome.bluetooth.onDeviceRemoved.addListener(function(device) {
-      logger('Device removed: ' + device.address);
+      console.log('Device removed: ' + device.address);
       delete devices[device.address];
     });
 
     chrome.bluetoothLowEnergy.onServiceAdded.addListener(function(service) {
-      logger('Service added: ' + service.instanceId);
+      console.log('Service added: ' + service.instanceId);
       services[service.instanceId] = service;
     });
 
     chrome.bluetoothLowEnergy.onServiceRemoved.addListener(function(service) {
-      logger('Service removed: ' + service.instanceId);
+      console.log('Service removed: ' + service.instanceId);
       delete services[service.instanceId];
     });
 
     chrome.bluetoothLowEnergy.onServiceChanged.addListener(function(service) {
-      logger('Service changed: ' + service.instanceId);
+      console.log('Service changed: ' + service.instanceId);
       services[service.instanceId] = service;
     });
 
     chrome.bluetoothLowEnergy.onCharacteristicValueChanged.addListener(function(characteristic) {
-      logger('Characteristic changed: ' + characteristic.instanceId);
+      console.log('Characteristic changed: ' + characteristic.instanceId);
       characteristics[characteristic.instanceId] = characteristic;
-      logger(JSON.stringify(characteristic));
+      console.log(JSON.stringify(characteristic));
     });
 
     chrome.bluetoothLowEnergy.onDescriptorValueChanged.addListener(function(descriptor) {
-      logger('Descriptor changed: ' + descriptor.instanceId);
+      console.log('Descriptor changed: ' + descriptor.instanceId);
       descriptor[descriptor.instanceId] = descriptor;
     });
   });
 
   addButton('Log known devices', function() {
-    logger(JSON.stringify(devices));
+    console.log(JSON.stringify(devices));
   });
 
   addButton('Log known services', function() {
-    logger(JSON.stringify(services));
+    console.log(JSON.stringify(services));
   });
 
   addButton('Log known characteristic', function() {
-    logger(JSON.stringify(characteristics));
+    console.log(JSON.stringify(characteristics));
   });
 
   addButton('Log known descriptor', function() {
-    logger(JSON.stringify(descriptors));
+    console.log(JSON.stringify(descriptors));
   });
 
   addButton('Start discovering', function() {
     chrome.bluetooth.startDiscovery(function() {
-      logger('start discovery...');
+      console.log('start discovery...');
     });
   });
 
   addButton('Stop discovering', function() {
     chrome.bluetooth.stopDiscovery(function() {
-      logger('stop discovery...');
+      console.log('stop discovery...');
     });
   });
 
   addButton('Get all devices', function() {
     chrome.bluetooth.getDevices(function(foundDevices) {
-      logger(JSON.stringify(foundDevices));
+      console.log(JSON.stringify(foundDevices));
       for (var i = 0; i < foundDevices.length; i++) {
         devices[foundDevices[i].address] = foundDevices[i];
       }
@@ -119,7 +117,7 @@ exports.defineManualTests = function(rootEl, addButton) {
     for (var address in devices) {
       (function(address) {
         chrome.bluetoothLowEnergy.connect(address, function() {
-          logger(address + ' connected');
+          console.log(address + ' connected');
         });
       })(address);
     }
@@ -130,15 +128,15 @@ exports.defineManualTests = function(rootEl, addButton) {
     for (var address in devices) {
       (function(address) {
         chrome.bluetoothLowEnergy.connect(address, function() {
-          logger(address + ' connected');
+          console.log(address + ' connected');
           chrome.bluetoothLowEnergy.getServices(address, function(services) {
-            logger('Services for address: ' + address);
-            logger(JSON.stringify(services));
+            console.log('Services for address: ' + address);
+            console.log(JSON.stringify(services));
             for (var i = 0; i < services.length; i++) {
-              logger(services[i].instanceId);
-              logger('start get characteristics for service Id: ' + services[i].instanceId);
+              console.log(services[i].instanceId);
+              console.log('start get characteristics for service Id: ' + services[i].instanceId);
               chrome.bluetoothLowEnergy.getCharacteristics(services[i].instanceId, function(characteristics) {
-                logger(JSON.stringify(characteristics));
+                console.log(JSON.stringify(characteristics));
                 for (var j = 0; j < characteristics.length; j++) {
                   chrome.bluetoothLowEnergy.startCharacteristicNotifications(characteristics[j].instanceId, function() {});
                 }
@@ -155,7 +153,7 @@ exports.defineManualTests = function(rootEl, addButton) {
       if (devices[address].connected) {
         (function(address) {
           chrome.bluetoothLowEnergy.disconnect(address, function() {
-            logger(address + ' disconnected');
+            console.log(address + ' disconnected');
           });
         })(address);
       }
@@ -166,10 +164,10 @@ exports.defineManualTests = function(rootEl, addButton) {
     for (var address in devices) {
       if (devices[address].connected) {
         (function(address) {
-          logger('Start get services for: ' + address);
+          console.log('Start get services for: ' + address);
           chrome.bluetoothLowEnergy.getServices(address, function(services) {
-            logger('Services for address: ' + address);
-            logger(JSON.stringify(services));
+            console.log('Services for address: ' + address);
+            console.log(JSON.stringify(services));
           });
         })(address);
       }
@@ -178,9 +176,9 @@ exports.defineManualTests = function(rootEl, addButton) {
 
   addButton('get all known services by Id', function() {
     for (var serviceId in services) {
-      logger(serviceId);
+      console.log(serviceId);
       chrome.bluetoothLowEnergy.getService(serviceId, function(service) {
-        logger(JSON.stringify(service));
+        console.log(JSON.stringify(service));
       });
     }
   });
@@ -189,7 +187,7 @@ exports.defineManualTests = function(rootEl, addButton) {
     for (var serviceId in services) {
       chrome.bluetoothLowEnergy.getIncludedServices(serviceId, function(includedServices) {
         for (var i = 0; i < includedServices.length; i++) {
-          logger(JSON.stringify(includedServices[i]));
+          console.log(JSON.stringify(includedServices[i]));
           services[includedServices[i].instanceId] = includedServices[i];
         }
       });
@@ -200,8 +198,8 @@ exports.defineManualTests = function(rootEl, addButton) {
     for (var serviceId in services) {
       (function(serviceId) {
         chrome.bluetoothLowEnergy.getCharacteristics(serviceId, function(foundCharacteristics) {
-          logger('Characteristics for service: ' + serviceId);
-          logger(JSON.stringify(foundCharacteristics));
+          console.log('Characteristics for service: ' + serviceId);
+          console.log(JSON.stringify(foundCharacteristics));
           for (var i = 0; i < foundCharacteristics.length; i++) {
             characteristics[foundCharacteristics[i].instanceId] = foundCharacteristics[i];
           }
@@ -213,7 +211,7 @@ exports.defineManualTests = function(rootEl, addButton) {
   addButton('get all known characteristics by id', function() {
     for (var characteristicId in characteristics) {
       chrome.bluetoothLowEnergy.getCharacteristic(characteristicId, function(characteristic) {
-        logger(JSON.stringify(characteristic));
+        console.log(JSON.stringify(characteristic));
         characteristics[characteristic.instanceId] = characteristic;
       });
     }
@@ -222,8 +220,8 @@ exports.defineManualTests = function(rootEl, addButton) {
   addButton('read all known characteristic', function() {
     for (var characteristicId in characteristics) {
       chrome.bluetoothLowEnergy.readCharacteristicValue(characteristicId, function(characteristic) {
-        logger(JSON.stringify(characteristic));
-        logger(abToStr(characteristic.value));
+        console.log(JSON.stringify(characteristic));
+        console.log(abToStr(characteristic.value));
       });
     }
   });
@@ -232,7 +230,7 @@ exports.defineManualTests = function(rootEl, addButton) {
     for (var characteristicId in characteristics) {
       (function(characteristicId) {
         chrome.bluetoothLowEnergy.writeCharacteristicValue(characteristicId, strToAb('test: '+ characteristicId), function() {
-          logger('successfully write into: ' + characteristicId);
+          console.log('successfully write into: ' + characteristicId);
         });
       })(characteristicId);
     }
@@ -242,7 +240,7 @@ exports.defineManualTests = function(rootEl, addButton) {
     for (var characteristicId in characteristics) {
       (function(characteristicId) {
         chrome.bluetoothLowEnergy.startCharacteristicNotifications(characteristicId, function() {
-          logger('successfully set notification on: ' + characteristicId);
+          console.log('successfully set notification on: ' + characteristicId);
         });
       })(characteristicId);
     }
@@ -252,7 +250,7 @@ exports.defineManualTests = function(rootEl, addButton) {
     for (var characteristicId in characteristics) {
       (function(characteristicId) {
         chrome.bluetoothLowEnergy.stopCharacteristicNotifications(characteristicId, function() {
-          logger('successfully set notification off: ' + characteristicId);
+          console.log('successfully set notification off: ' + characteristicId);
         });
       })(characteristicId);
     }
@@ -261,7 +259,7 @@ exports.defineManualTests = function(rootEl, addButton) {
   addButton('get descriptors for known characteristics', function() {
     for (var characteristicId in characteristics) {
       chrome.bluetoothLowEnergy.getDescriptors(characteristicId, function(foundDescriptors) {
-        logger(JSON.stringify(foundDescriptors));
+        console.log(JSON.stringify(foundDescriptors));
         for (var i = 0; i < foundDescriptors.length; i++) {
           descriptors[foundDescriptors[i].instanceId] = foundDescriptors[i];
         }
@@ -272,7 +270,7 @@ exports.defineManualTests = function(rootEl, addButton) {
   addButton('get known descriptor by Id', function() {
     for (var descriptorId in descriptors) {
       chrome.bluetoothLowEnergy.getDescriptor(descriptorId, function(descriptor) {
-        logger(JSON.stringify(descriptor));
+        console.log(JSON.stringify(descriptor));
       });
     }
   });
@@ -280,8 +278,8 @@ exports.defineManualTests = function(rootEl, addButton) {
   addButton('read known descriptor by Id', function() {
     for (var descriptorId in descriptors) {
       chrome.bluetoothLowEnergy.readDescriptorValue(descriptorId, function(descriptor) {
-        logger(JSON.stringify(descriptor));
-        logger(abToStr(descriptor.value));
+        console.log(JSON.stringify(descriptor));
+        console.log(abToStr(descriptor.value));
       });
     }
   });
@@ -290,7 +288,7 @@ exports.defineManualTests = function(rootEl, addButton) {
     for (var descriptorId in descriptors) {
       (function(descriptorId) {
         chrome.bluetoothLowEnergy.writeDescriptorValue(descriptorId, strToAb('test: ' + descriptorId), function() {
-          logger('successfully write into: ' + descriptorId);
+          console.log('successfully write into: ' + descriptorId);
         });
       })(descriptorId);
     }
