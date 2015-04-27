@@ -13,7 +13,7 @@
 
   <name>Chrome Apps Bluetooth Low Energy API</name>
 
-  <dependency id="org.chromium.bluetooth" />
+  <dependency id="cordova-plugin-chrome-apps-bluetooth" />
 
   <js-module src="bluetoothLowEnergy.js" name="bluetoothLowEnergy">
     <clobbers target="chrome.bluetoothLowEnergy" />
