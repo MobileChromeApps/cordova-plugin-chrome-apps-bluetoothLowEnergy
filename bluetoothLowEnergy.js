@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-var Event = require('org.chromium.common.events');
+var Event = require('cordova-plugin-chrome-apps-common.events');
 var exec = require('cordova/exec');
-var callbackWithError = require('org.chromium.common.errors').callbackWithError;
+var callbackWithError = require('cordova-plugin-chrome-apps-common.errors').callbackWithError;
 
 var fail = function(callback) {
     return callback && function(msg) {
@@ -234,4 +234,4 @@ function registerEvents() {
     exec(onEventsCallback, null, 'ChromeBluetoothLowEnergy', 'registerBluetoothLowEnergyEvents', []);
 }
 
-require('org.chromium.common.helpers').runAtStartUp(registerEvents);
+require('cordova-plugin-chrome-apps-common.helpers').runAtStartUp(registerEvents);
