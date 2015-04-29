@@ -12,6 +12,8 @@
   </engines>
 
   <name>Chrome Apps Bluetooth Low Energy API</name>
+  <repo>https://github.com/MobileChromeApps/cordova-plugin-chrome-apps-bluetoothLowEnergy.git</repo>
+  <issue>https://github.com/MobileChromeApps/cordova-plugin-chrome-apps-bluetoothLowEnergy/issues</issue>
 
   <dependency id="cordova-plugin-chrome-apps-bluetooth" />
 
