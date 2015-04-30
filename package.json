@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-chrome-apps-bluetoothLowEnergy",
-  "version": "1.0.2-dev",
+  "version": "1.0.2",
   "description": "This plugin implements the [chrome.bluetoothLowEnergy](https://developer.chrome.com/apps/bluetoothLowEnergy) API for iOS and Android.",
   "cordova": {
     "id": "cordova-plugin-chrome-apps-bluetoothlowenergy",

@@ -8,6 +8,9 @@ Stable on Android and iOS.
 
 # Release Notes
 
+## 1.0.2 (April 30, 2015)
+- Renamed plugin to pubilsh to NPM
+
 ## 1.0.1 (Mar 17, 2015)
 * Remove android.support.v4 dependency from chrome.bluetooth
 
