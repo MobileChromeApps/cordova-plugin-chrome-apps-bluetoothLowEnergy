@@ -760,9 +760,9 @@ public class ChromeBluetoothLowEnergy extends CordovaPlugin {
         getServicesSemaphore.acquire();
         getServicesCallbackContext = callbackContext;
         if (!gatt.discoverServices()) {
+          getServicesCallbackContext.error("Failed to discover services");
           getServicesCallbackContext = null;
           getServicesSemaphore.release();
-          getServicesCallbackContext.error("Failed to discover services");
         }
       } catch (InterruptedException e) {
       }
