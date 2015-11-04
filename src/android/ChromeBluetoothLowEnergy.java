@@ -662,6 +662,10 @@ public class ChromeBluetoothLowEnergy extends CordovaPlugin {
     // until a connect() is called.
     private Semaphore gattAsyncCommandSemaphore;
 
+    // Ensure that concurrent calls to getServices do not overwrite the getServicesCallbackContext
+    private Semaphore getServicesSemaphore;
+
+
     ChromeBluetoothLowEnergyPeripheral(ScanResult bleScanResult) {
       this.bleScanResult = bleScanResult;
     }
@@ -711,6 +715,8 @@ public class ChromeBluetoothLowEnergy extends CordovaPlugin {
       // called when a connection lost. This abort all pending gatt commands.
       gattAsyncCommandSemaphore = new Semaphore(1, true);
 
+      getServicesSemaphore = new Semaphore(1, true);
+
       Thread.sleep(CONNECTION_TIMEOUT);
       timeoutIfNotConnect();
     }
@@ -750,12 +756,17 @@ public class ChromeBluetoothLowEnergy extends CordovaPlugin {
         return;
       }
 
-      getServicesCallbackContext = callbackContext;
-
-      if (!gatt.discoverServices()) {
-        getServicesCallbackContext.error("Failed to discover services");
-        getServicesCallbackContext = null;
+      try {
+        getServicesSemaphore.acquire();
+        getServicesCallbackContext = callbackContext;
+        if (!gatt.discoverServices()) {
+          getServicesCallbackContext = null;
+          getServicesSemaphore.release();
+          getServicesCallbackContext.error("Failed to discover services");
+        }
+      } catch (InterruptedException e) {
       }
+
     }
 
     void getCharacteristic(String characteristicId, CallbackContext callbackContext)
@@ -1256,6 +1267,7 @@ public class ChromeBluetoothLowEnergy extends CordovaPlugin {
             if (getServicesCallbackContext != null) {
               getServicesCallbackContext.sendPluginResult(new PluginResult(Status.OK, servicesInfo));
               getServicesCallbackContext = null;
+              getServicesSemaphore.release();
             }
           }
         }
