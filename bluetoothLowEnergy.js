@@ -47,9 +47,35 @@ exports.getService = function(serviceId, callback) {
     }
 };
 
-exports.getServices = function(deviceAddress, callback) {
-    exec(callback, fail(callback), 'ChromeBluetoothLowEnergy', 'getServices', [deviceAddress]);
-};
+exports.getServices = (function() {
+    // A Map stores getServices' callbacks. Key is the deviceAddress, and value
+    // is an array of callback.
+    var getServicesCallbacks = {};
+
+    return function(deviceAddress, callback) {
+        if (getServicesCallbacks[deviceAddress] !== undefined) {
+            getServicesCallbacks[deviceAddress].push(callback);
+        } else {
+            getServicesCallbacks[deviceAddress] = [callback];
+
+            var handleWin = function(arg) {
+                getServicesCallbacks[deviceAddress].forEach(function(callback) {
+                    callback(arg);
+                });
+                delete getServicesCallbacks[deviceAddress];
+            };
+
+            var handleFail = function(arg) {
+                getServicesCallbacks[deviceAddress].forEach(function(callback) {
+                    (fail(callback)(arg));
+                });
+                delete getServicesCallbacks[deviceAddress];
+            };
+
+            exec(handleWin, handleFail, 'ChromeBluetoothLowEnergy', 'getServices', [deviceAddress]);
+        }
+    };
+}());
 
 exports.getCharacteristic = function(characteristicId, callback) {
     var win = callback && function(uuid, service, properties, instanceId, value) {
