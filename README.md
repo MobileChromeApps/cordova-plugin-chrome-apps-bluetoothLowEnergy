@@ -8,6 +8,9 @@ Stable on Android and iOS.
 
 # Release Notes
 
+## 1.0.3 (Nov 10, 2015)
+- Fix concurrent getServices calls for same device not working (Android)
+
 ## 1.0.2 (April 30, 2015)
 - Renamed plugin to pubilsh to NPM
 
